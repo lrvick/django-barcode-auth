@@ -1,20 +1,28 @@
 from django.middleware.csrf import get_token
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from django.contrib.auth import login
+from django.contrib import auth
 from django.contrib.auth.models import User
-from utils import verify_passhash
+from django.http import HttpResponseRedirect
+from backends import BarcodeAuthBackend
 
-def barlogin(request,mode='default',query='default'):
-    if request.REQUEST.get('barcode_data'):
-        barcode_data = request.REQUEST['barcode_data']
-        username,passhash = barcode_data.split('|')
-        if verify_passhash(username,passhash):
-            user = User.objects.get(username=username)
-            user.backend='django.contrib.auth.backends.ModelBackend' 
-            login(request, user)
-        else:
-            print 'authentication invalid'
-    return render_to_response('login.html', {}, 
-        context_instance=RequestContext(request))
+barcode_auth = BarcodeAuthBackend()
 
+def login(request,mode='default',query='default'):
+    if request.user.is_authenticated():
+        return HttpResponseRedirect('/')
+    else:
+        if request.REQUEST.get('barcode_data'):
+            barcode_data = request.REQUEST['barcode_data']
+            try: 
+                username,password = barcode_data.split('|')
+                user = barcode_auth.authenticate(username=username,password=password)
+            except ValueError:
+                user = None
+            if user is not None:
+                if user.is_active():
+                    user.backend='django.contrib.auth.backends.ModelBackend' 
+                    auth.login(request, user)
+                    return HttpResponseRedirect('/')
+        return render_to_response('login.html', {}, 
+            context_instance=RequestContext(request))

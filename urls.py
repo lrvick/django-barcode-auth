@@ -1,7 +1,7 @@
 from django.conf.urls.defaults import *
 
-from views import barlogin
+from views import login
 
 urlpatterns = patterns('',
-    (r'^$', barlogin),
+    (r'^$', login),
 )

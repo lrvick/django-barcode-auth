@@ -1,6 +1,6 @@
- barauth < http://github.com/lrvick/barauth >
+ barauth < http://github.com/lrvick/django-barcode-auth >
 
-WHAT IS BARAUTH?
+WHAT IS DJANGO-BARCODE-AUTH?
     
     A system that lets you use any barcode scanner that emulates a
     keyboard (most of them do) and use it to log-in a user via 

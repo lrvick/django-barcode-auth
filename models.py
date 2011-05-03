@@ -13,19 +13,19 @@ class UserBarcode(models.Model):
     user = models.ForeignKey(User, unique=True)
     barcode = models.ImageField(upload_to='%s/img/barcodes' % settings.STATIC_ROOT)
 
-def user_create_barcode(sender, **kwargs):
-    user=kwargs.get('instance')
-    password_hash = gen_passhash(user.username)
-    qr = QRCode(6, QRErrorCorrectLevel.Q)
-    qr.addData("%s|%s" % (user.username,password_hash))
-    qr.make()
-    im = qr.makeImage()
-    temp_file = StringIO()
-    im.save(temp_file, format='png')
-    barcode_contents = ContentFile(temp_file.getvalue())
-    user_barcode = UserBarcode()
-    user_barcode.user = user
-    user_barcode.barcode.save('%s.png' % password_hash,barcode_contents)
-    pass
+def user_create_barcode(sender, instance, created, **kwargs):
+    if created:
+        password_hash = gen_passhash(instance.username)
+        qr = QRCode(6, QRErrorCorrectLevel.Q)
+        qr.addData("%s|%s" % (instance.username,password_hash))
+        qr.make()
+        im = qr.makeImage()
+        temp_file = StringIO()
+        im.save(temp_file, format='png')
+        barcode_contents = ContentFile(temp_file.getvalue())
+        user_barcode = UserBarcode()
+        user_barcode.user = instance
+        user_barcode.barcode.save('%s.png' % password_hash,barcode_contents)
+        pass
 
 models.signals.post_save.connect(user_create_barcode, sender=User)

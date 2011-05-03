@@ -10,10 +10,3 @@ def gen_passhash(username):
     token_handle.update(settings.SECRET_KEY)
     hex_hash = token_handle.hexdigest() 
     return hex_hash
-
-def verify_passhash(username,passhash):
-    known_passhash = gen_passhash(username)
-    if passhash == known_passhash:
-        return True 
-    else:
-        return False
