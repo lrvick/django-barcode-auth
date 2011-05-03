@@ -5,6 +5,8 @@ WHAT IS DJANGO-BARCODE-AUTH?
     A system that lets you use any barcode scanner that emulates a
     keyboard (most of them do) and use it to log-in a user via 
     django's auth system.
+    
+    Ideal for touch-screen kiosk deployments.
 
     Also has hooks to generate barcodes for all users, that can 
     be obtained and printed from an admin interface.
