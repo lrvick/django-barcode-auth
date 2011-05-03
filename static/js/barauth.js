@@ -1,7 +1,13 @@
 function barauth(){
-    $('<input style="position:absolute;left:-200%;" id="barauth_form" type="text">').prependTo('body')
-    $('#barauth_form').focus()
+    $('<input name="barcode_data" style="position:absolute;left:-200%;" id="barauth_input" type="text">').prependTo('#barauth_form')
+    $('#barauth_input').focus()
+    $('#barauth_input').keyup(function(e) {
+        if(e.keyCode == 13) {
+            e.preventDefault();
+            $.post("/", $("#barauth_form").serialize());
+        }
+    });
 }
 $(document).ready(function() {
-    $('#login').click(function(){barauth()});
+    barauth()
 });
