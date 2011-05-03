@@ -5,3 +5,4 @@ from django.template import RequestContext
 def login(request,mode='default',query='default'):
     return render_to_response('login.html', {}, 
         context_instance=RequestContext(request))
+
