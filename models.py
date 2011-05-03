@@ -1,7 +1,8 @@
 from django.db import models
 from django.conf import settings
-from django.contrib.auth.models import User
 from django.core.files.base import ContentFile
+from django.contrib.auth.models import User
+from utils import gen_passhash
 from PyQRNative import QRCode, QRErrorCorrectLevel 
 try:
     from cStringIO import StringIO
@@ -11,15 +12,20 @@ except ImportError:
 class UserBarcode(models.Model):
     user = models.ForeignKey(User, unique=True)
     barcode = models.ImageField(upload_to='%s/img/barcodes' % settings.STATIC_ROOT)
-    def save(self):
-        if not self.barcode:
-            password_hash = self.user.password
-            qr = QRCode(5, QRErrorCorrectLevel.Q)
-            qr.addData(password_hash)
-            qr.make()
-            im = qr.makeImage()
-            temp_file = StringIO()
-            im.save(temp_file, format='png')
-            barcode_contents = ContentFile(temp_file.getvalue())
-            self.barcode.save('%s.png' % password_hash,barcode_contents)
-            super(UserBarcode, self).save()
+
+def user_create_barcode(sender, **kwargs):
+    user=kwargs.get('instance')
+    password_hash = gen_passhash(user.username)
+    qr = QRCode(6, QRErrorCorrectLevel.Q)
+    qr.addData("%s|%s" % (user.username,password_hash))
+    qr.make()
+    im = qr.makeImage()
+    temp_file = StringIO()
+    im.save(temp_file, format='png')
+    barcode_contents = ContentFile(temp_file.getvalue())
+    user_barcode = UserBarcode()
+    user_barcode.user = user
+    user_barcode.barcode.save('%s.png' % password_hash,barcode_contents)
+    pass
+
+models.signals.post_save.connect(user_create_barcode, sender=User)
