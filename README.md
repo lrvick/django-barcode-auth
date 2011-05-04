@@ -9,7 +9,7 @@
   django's auth system.
     
   Ideal for touch-screen kiosk deployments, cash registers, people
-  who want to feel like James Bond when they log into their blog, etc.
+  who want to feel like James Bond when they log in to their blog, etc.
 
   Also has hooks to generate barcodes for all users, that can 
   be obtained and printed from an admin interface.
