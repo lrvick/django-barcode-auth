@@ -1,5 +1,6 @@
 # Django-Barcode-Auth #
-[[http://github.com/lrvick/django-barcode-auth]]
+  
+  [[http://github.com/lrvick/django-barcode-auth]]
 
 ## About ##
 
@@ -7,7 +8,8 @@
   keyboard (most of them do) and use it to log-in a user via 
   django's auth system.
     
-  Ideal for touch-screen kiosk deployments.
+  Ideal for touch-screen kiosk deployments, cash registers, people
+  who want to feel like James Bond when they log into their blog, etc.
 
   Also has hooks to generate barcodes for all users, that can 
   be obtained and printed from an admin interface.
@@ -49,7 +51,7 @@
   The app also includes a signal that will auto-generate a barcode on new user creation
   You can determine its location using the included barcode_hash filter like so: 
     
-    {{ STATIC_ROOT }}/img/barcodes/{{ user.username|passwordhash }}.png 
+    {{ STATIC_ROOT }}/img/barcodes/{{ user.username|barcode_hash }}.png 
   
 ## Notes ##
     
