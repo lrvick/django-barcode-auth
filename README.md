@@ -19,25 +19,24 @@
   * Invisibly login when a barcode is scanned via jQuery
   * Can be included and used as a standard django authentication backend
 
-## Usage/Installation ##
+## Usage / Installation ##
 
   1. Add django-barcode-auth to INSTALLED_APPS
+
   2. Ensure your login template is including jquery, and barauth.js
-  
-  ```
-  <head>
-    ...
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}js/barauth.js"></script>
-    ...
-  </head>
-  ```
+
+        <head>
+          ...
+          <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+          <script type="text/javascript" src="{{ STATIC_URL }}js/barauth.js"></script>
+          ...
+        </head>
+
   3. Stick an empty form with the id 'barauth_form' and a csrf_token somewhere in your template.
-  ```
-  <form id="barauth_form" method="POST" action="">
-    {% csrf_token %}
-  </form>
-  ```
+
+        <form id="barauth_form" method="POST" action="">
+          {% csrf_token %}
+        </form>
 
   When loaded this will create and focus a hidden form field.
   
