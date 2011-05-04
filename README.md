@@ -16,7 +16,7 @@
 
 ## Current Features ##
  
-  * Includes a signals so barcodes are generated on regular user creation
+  * Includes a signal so barcodes are generated on regular user creation
   * Easy template to generate/verify hashes from barcodes
   * Invisibly login when a barcode is scanned via jQuery
   * Can be included and used as a standard django authentication backend
