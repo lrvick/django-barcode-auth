@@ -51,6 +51,7 @@
   The app also includes a signal that will auto-generate a barcode on new user creation
   You can determine its location using the included barcode_hash filter like so: 
     
+    {% load barcode_auth %}
     {{ STATIC_ROOT }}/img/barcodes/{{ user.username|barcode_hash }}.png 
   
 ## Notes ##
