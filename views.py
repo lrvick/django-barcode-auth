@@ -5,7 +5,6 @@ from django.contrib import auth
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from backends import BarcodeAuthBackend
-from forms import BarcodeUserCreationForm
 from django.contrib.auth.forms import UserCreationForm
  
 barcode_auth = BarcodeAuthBackend()
@@ -40,4 +39,4 @@ def register(request):
         form = UserCreationForm()
     return render_to_response("register.html", {
         'form' : form,
-    }, context_instance=RequestContext(request)))
+    }, context_instance=RequestContext(request))
