@@ -28,6 +28,10 @@ def login(request):
         return render_to_response('login.html', {}, 
             context_instance=RequestContext(request))
 
+def logout(request):
+    auth.logout(request)
+    return HttpResponseRedirect('/')
+
 def register(request):
     if request.user.is_authenticated():
         return HttpResponseRedirect('/')
