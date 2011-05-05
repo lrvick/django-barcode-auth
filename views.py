@@ -21,7 +21,7 @@ def login(request):
             except ValueError:
                 user = None
             if user is not None:
-                if user.is_active():
+                if user.is_active:
                     user.backend='django.contrib.auth.backends.ModelBackend' 
                     auth.login(request, user)
                     return HttpResponseRedirect('/')

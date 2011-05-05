@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from utils import gen_passhash
 
 class BarcodeAuthBackend(object):
     """
