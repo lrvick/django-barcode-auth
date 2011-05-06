@@ -4,6 +4,7 @@ from utils import gen_passhash
 
 register = template.Library()
 
+
 @register.filter
 @stringfilter
 def barcode_hash(value):
