@@ -1,6 +1,6 @@
 # Django-Barcode-Auth #
   
-  [[http://github.com/lrvick/django-barcode-auth]]
+  <http://github.com/lrvick/django-barcode-auth>
 
 ## About ##
 
