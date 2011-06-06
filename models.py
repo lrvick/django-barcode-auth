@@ -3,6 +3,7 @@ from django.conf import settings
 from django.core.files.base import ContentFile
 from django.contrib.auth.models import User
 from utils import gen_passhash
+from utils import print_card
 from PyQRNative import QRCode, QRErrorCorrectLevel
 
 try:
@@ -14,7 +15,7 @@ except ImportError:
 class UserBarcode(models.Model):
     user = models.ForeignKey(User, unique=True)
     barcode = models.ImageField(
-            upload_to='%s/img/barcodes' % settings.STATIC_ROOT
+            upload_to='%s/img/barcodes' % settings.MEDIA_ROOT
             )
 
 
@@ -26,6 +27,12 @@ def user_create_barcode(sender, instance, created, **kwargs):
         qr.make()
         im = qr.makeImage()
         temp_file = StringIO()
+        # We'll take the username if we have to, but prefer first+last
+        if settings.PRINT_CARDS:
+            if filter(lambda x: x, [instance.first_name, instance.last_name]):
+                print_card("%s %s" % (instance.first_name, instance.last_name), im)
+            else:
+                print_card(instance.username, im)
         im.save(temp_file, format='png')
         barcode_contents = ContentFile(temp_file.getvalue())
         user_barcode = UserBarcode()

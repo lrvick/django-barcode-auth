@@ -1,11 +1,12 @@
+from backends import BarcodeAuthBackend
+from django.contrib import auth
+#from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
+from django.http import HttpResponseRedirect
 from django.middleware.csrf import get_token
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from django.contrib import auth
-from django.contrib.auth.models import User
-from django.http import HttpResponseRedirect
-from backends import BarcodeAuthBackend
-from django.contrib.auth.forms import UserCreationForm
+from forms import UserCreationForm
 
 barcode_auth = BarcodeAuthBackend()
 
@@ -44,7 +45,9 @@ def register(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
         if form.is_valid():
-            return HttpResponseRedirect('/login')
+            print("saving form")
+            form.save()
+            return HttpResponseRedirect('login')
     else:
         form = UserCreationForm()
     return render_to_response("register.html", {
