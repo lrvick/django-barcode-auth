@@ -18,7 +18,7 @@ def login(request):
         if request.REQUEST.get('barcode_data'):
             barcode_data = request.REQUEST['barcode_data']
             try:
-                username, password = barcode_data.split('|')
+                username, password = barcode_data.lstrip('#').split('|')
                 user = barcode_auth.authenticate(
                         username=username,
                         password=password

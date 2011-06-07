@@ -23,7 +23,7 @@ def user_create_barcode(sender, instance, created, **kwargs):
     if created:
         password_hash = gen_passhash(instance.username)
         qr = QRCode(6, QRErrorCorrectLevel.Q)
-        qr.addData("%s|%s" % (instance.username, password_hash))
+        qr.addData("####%s|%s" % (instance.username, password_hash))
         qr.make()
         im = qr.makeImage()
         temp_file = StringIO()
