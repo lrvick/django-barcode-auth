@@ -70,3 +70,6 @@ def profile(request, userprofile):
                 'form': form,
                 'user': user,
                 }, context_instance=RequestContext(request))
+        else:
+            # Users can only see their own profiles
+            return HttpResponseRedirect('/')
