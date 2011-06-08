@@ -2,6 +2,8 @@ from backends import BarcodeAuthBackend
 from django.contrib import auth
 #from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
+from django.forms.models import model_to_dict
 from django.http import HttpResponseRedirect
 from django.middleware.csrf import get_token
 from django.shortcuts import render_to_response
@@ -53,3 +55,18 @@ def register(request):
     return render_to_response("register.html", {
         'form': form,
     }, context_instance=RequestContext(request))
+
+
+def profile(request, userprofile):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect(reverse('login'))
+    else:
+        user = User.objects.get(username=userprofile)
+        if request.user == user:
+            prefill = model_to_dict(user)
+            print(prefill)
+            form = UserCreationForm(initial=prefill)
+            return render_to_response("profile.html", {
+                'form': form,
+                'user': user,
+                }, context_instance=RequestContext(request))
