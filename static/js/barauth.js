@@ -1,13 +1,33 @@
-function barauth(){
-    $('<input name="barcode_data" style="position:absolute;left:-200%;" id="barauth_input" type="text">').prependTo('#barauth_form')
-    $('#barauth_input').focus()
-    $('#barauth_input').keyup(function(e) {
-        if(e.keyCode == 13) {
-            e.preventDefault();
-            $.post("/", $("#barauth_form").serialize());
+var keys='';
+var header_found
+var username
+var host = '192.168.174.85:8000'
+document.onkeypress = function(e) {
+    get = window.event?event:e;
+    key = get.keyCode?get.keyCode:get.charCode;
+    key = String.fromCharCode(key);
+    if (header_found == true){
+        if (username == null){
+            if (key == '|'){
+                username = keys
+                keys = ''
+            } 
+        } else if (keys.length == 56){
+            hash = keys
+            barcode_data = username + '|' + hash
+            auth_url = 'http://' + host + '/barauth/login?barcode_data=' + barcode_data
+            window.location = auth_url
         }
-    });
+        if (key != '|'){ 
+            keys+=key;
+        }
+    } else {
+        if (key == '#'){
+            keys+=key;
+        } 
+        if (keys == '####'){
+            header_found = true
+            keys = ''
+        }
+    }
 }
-$(document).ready(function() {
-    barauth()
-});
