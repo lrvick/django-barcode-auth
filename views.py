@@ -8,30 +8,35 @@ from django.http import HttpResponseRedirect
 from django.middleware.csrf import get_token
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+#from django.views.decorators.csrf import csrf_exempt
 from forms import UserCreationForm
 
 barcode_auth = BarcodeAuthBackend()
 
 
+# BE AWARE that uncommenting this introduces security risks. Only do this if
+# you need to login from something outside of the Django install
+#@csrf_exempt
 def login(request):
+    if 'barcode_data' in request.REQUEST:
+        barcode_data = request.REQUEST['barcode_data']
+        try:
+            username, password = barcode_data.lstrip('#').split('|')
+            user = barcode_auth.authenticate(
+                    username=username,
+                    password=password
+                    )
+        except ValueError:
+            user = None
+        if user is not None:
+            auth.logout(request)
+            if user.is_active:
+                user.backend = 'django.contrib.auth.backends.ModelBackend'
+                auth.login(request, user)
+
     if request.user.is_authenticated():
         return HttpResponseRedirect('/')
     else:
-        if request.REQUEST.get('barcode_data'):
-            barcode_data = request.REQUEST['barcode_data']
-            try:
-                username, password = barcode_data.lstrip('#').split('|')
-                user = barcode_auth.authenticate(
-                        username=username,
-                        password=password
-                        )
-            except ValueError:
-                user = None
-            if user is not None:
-                if user.is_active:
-                    user.backend = 'django.contrib.auth.backends.ModelBackend'
-                    auth.login(request, user)
-                    return HttpResponseRedirect('/')
         return render_to_response('login.html', {},
             context_instance=RequestContext(request))
 
@@ -64,7 +69,6 @@ def profile(request, userprofile):
         user = User.objects.get(username=userprofile)
         if request.user == user:
             prefill = model_to_dict(user)
-            print(prefill)
             form = UserCreationForm(initial=prefill)
             return render_to_response("profile.html", {
                 'form': form,
