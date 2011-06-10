@@ -34,7 +34,7 @@ def user_create_barcode(sender, instance, created, **kwargs):
         user_barcode.user = instance
         user_barcode.barcode.save('%s.png' % password_hash, barcode_contents)
         if settings.PRINT_CARDS:
-            if filter(lambda x: x, [instance.first_name, instance.last_name]):
+            if instance.first_name or instance.last_name:
                 print_card("%s %s" % (instance.first_name, instance.last_name), user_barcode.barcode.name)
             else:
                 print_card(instance.username, user_barcode.barcode.name)
