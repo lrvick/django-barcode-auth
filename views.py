@@ -1,4 +1,5 @@
 from backends import BarcodeAuthBackend
+from django.conf import settings
 from django.contrib import auth
 #from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
@@ -10,6 +11,8 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 #from django.views.decorators.csrf import csrf_exempt
 from forms import UserCreationForm
+from models import UserBarcode
+from utils import print_card
 
 barcode_auth = BarcodeAuthBackend()
 
@@ -52,7 +55,6 @@ def register(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
         if form.is_valid():
-            print("saving form")
             form.save()
             return HttpResponseRedirect('login')
     else:
@@ -64,7 +66,7 @@ def register(request):
 
 def profile(request, userprofile):
     if not request.user.is_authenticated():
-        return HttpResponseRedirect(reverse('login'))
+        return HttpResponseRedirect(reverse('barauth.views.login', current_app='barauth'))
     else:
         user = User.objects.get(username=userprofile)
         if request.user == user:
@@ -73,7 +75,19 @@ def profile(request, userprofile):
             return render_to_response("profile.html", {
                 'form': form,
                 'user': user,
+                'enable_printing': settings.PRINT_CARDS,
                 }, context_instance=RequestContext(request))
         else:
             # Users can only see their own profiles
             return HttpResponseRedirect('/')
+
+def reprint(request, username=None):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect(reverse('barauth.views.login', current_app='barauth'))
+    else:
+        user = User.objects.get(username=username)
+        if request.user == user:
+            barcode = UserBarcode.objects.get(user=user).barcode.name
+            print_card(user.username, barcode)
+        # Now they should go get their card, so let's log them out for security
+        return HttpResponseRedirect(reverse('barauth.views.logout'))
