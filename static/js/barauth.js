@@ -14,7 +14,12 @@ document.onkeypress = function(e) {
         } else if (keys.length == 56){
             hash = keys
             barcode_data = username + '|' + hash
-            auth_url = 'http://' + window.location.hostname + '/barauth/login?barcode_data=' + barcode_data
+            if (window.location.port != 80) {
+                host = window.location.hostname + ':' + window.location.port
+            } else {
+                host = window.location.hostname
+            }
+            auth_url = 'http://' + host + '/barauth/login?barcode_data=' + barcode_data
             window.location = auth_url
         }
         if (key != '|'){ 
