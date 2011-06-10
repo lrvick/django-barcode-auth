@@ -28,16 +28,16 @@ def user_create_barcode(sender, instance, created, **kwargs):
         im = qr.makeImage()
         temp_file = StringIO()
         # We'll take the username if we have to, but prefer first+last
-        if settings.PRINT_CARDS:
-            if filter(lambda x: x, [instance.first_name, instance.last_name]):
-                print_card("%s %s" % (instance.first_name, instance.last_name), im)
-            else:
-                print_card(instance.username, im)
         im.save(temp_file, format='png')
         barcode_contents = ContentFile(temp_file.getvalue())
         user_barcode = UserBarcode()
         user_barcode.user = instance
         user_barcode.barcode.save('%s.png' % password_hash, barcode_contents)
+        if settings.PRINT_CARDS:
+            if filter(lambda x: x, [instance.first_name, instance.last_name]):
+                print_card("%s %s" % (instance.first_name, instance.last_name), user_barcode.barcode.name)
+            else:
+                print_card(instance.username, user_barcode.barcode.name)
         pass
 
 models.signals.post_save.connect(user_create_barcode, sender=User)

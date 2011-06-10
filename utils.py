@@ -28,7 +28,7 @@ def print_card(username, barcode):
     pdffile = NamedTemporaryFile()
 
     c = canvas.Canvas(pdffile.name, pagesize=(PAGE_WIDTH, PAGE_HEIGHT))
-    c.drawInlineImage(barcode, 0.19 * inch, 0.1919 * inch, width=(1.75 * inch), height=(1.75 * inch), preserveAspectRatio=True)
+    c.drawImage(barcode, 0.19 * inch, 0.1919 * inch, width=(1.75 * inch), height=(1.75 * inch), preserveAspectRatio=True)
     c.setFont('Helvetica', 8)
     c.drawCentredString(XCENTER, 2.1919 * inch, settings.PRINT_MESSAGE_3)
     c.setFont('Helvetica-Oblique', 10)
