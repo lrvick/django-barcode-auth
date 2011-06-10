@@ -1,7 +1,6 @@
 var keys='';
 var header_found
 var username
-var host = '192.168.174.85:8000'
 document.onkeypress = function(e) {
     get = window.event?event:e;
     key = get.keyCode?get.keyCode:get.charCode;
@@ -15,7 +14,7 @@ document.onkeypress = function(e) {
         } else if (keys.length == 56){
             hash = keys
             barcode_data = username + '|' + hash
-            auth_url = 'http://' + host + '/barauth/login?barcode_data=' + barcode_data
+            auth_url = 'http://' + window.location.hostname + '/barauth/login?barcode_data=' + barcode_data
             window.location = auth_url
         }
         if (key != '|'){ 
