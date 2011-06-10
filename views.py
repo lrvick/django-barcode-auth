@@ -22,6 +22,7 @@ barcode_auth = BarcodeAuthBackend()
 #@csrf_exempt
 def login(request):
     if 'barcode_data' in request.REQUEST:
+        auth.logout(request)
         barcode_data = request.REQUEST['barcode_data']
         try:
             username, password = barcode_data.lstrip('#').split('|')
@@ -32,16 +33,13 @@ def login(request):
         except ValueError:
             user = None
         if user is not None:
-            auth.logout(request)
             if user.is_active:
                 user.backend = 'django.contrib.auth.backends.ModelBackend'
                 auth.login(request, user)
+                return HttpResponseRedirect('/')
 
-    if request.user.is_authenticated():
-        return HttpResponseRedirect('/')
-    else:
-        return render_to_response('login.html', {},
-            context_instance=RequestContext(request))
+    return render_to_response('login.html', {},
+        context_instance=RequestContext(request))
 
 
 def logout(request):
