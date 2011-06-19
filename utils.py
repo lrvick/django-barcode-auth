@@ -21,16 +21,23 @@ def gen_passhash(username):
     hex_hash = token_handle.hexdigest()
     return hex_hash
 
-def print_card(username, barcode):
+
+def print_card(user, barcode):
     PAGE_HEIGHT = 3.37 * inch
     PAGE_WIDTH = 2.125 * inch
     XCENTER = PAGE_WIDTH / 2.0
     pdffile = NamedTemporaryFile()
+    if user.first_name:
+        username = "%s %s" % (user.first_name, user.last_name)
+    else:
+        username = user.username
 
     c = canvas.Canvas(pdffile.name, pagesize=(PAGE_WIDTH, PAGE_HEIGHT))
     c.drawImage(barcode, 0.19 * inch, 0.1919 * inch, width=(1.75 * inch), height=(1.75 * inch), preserveAspectRatio=True)
     c.setFont('Helvetica', 8)
-    c.drawCentredString(XCENTER, 2.1919 * inch, settings.PRINT_MESSAGE_3)
+    c.drawCentredString(XCENTER, 2 * inch, settings.PRINT_MESSAGE_3)
+    c.setFont('Helvetica-Oblique', 8)
+    c.drawCentredString(XCENTER, 2.4 * inch, "Member since %s" % user.date_joined.strftime('%m/%Y'))
     c.setFont('Helvetica-Oblique', 10)
     c.drawCentredString(XCENTER, 2.6919 * inch, settings.PRINT_MESSAGE_2)
     c.setFont('Helvetica-Bold', 14)

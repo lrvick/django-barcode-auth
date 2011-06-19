@@ -86,6 +86,6 @@ def reprint(request, username=None):
         user = User.objects.get(username=username)
         if request.user == user:
             barcode = UserBarcode.objects.get(user=user).barcode.name
-            print_card(user.username, barcode)
+            print_card(user, barcode)
         # Now they should go get their card, so let's log them out for security
         return HttpResponseRedirect(reverse('barauth.views.logout'))
