@@ -14,7 +14,9 @@ document.onkeypress = function(e) {
         } else if (keys.length == 56){
             hash = keys
             barcode_data = username + '|' + hash
-            if (window.location.port != 80) {
+            if (window.barauth_host != undefined ){
+                host = window.barauth_host
+            } else if (window.location.port != 80) {
                 host = window.location.hostname + ':' + window.location.port
             } else {
                 host = window.location.hostname

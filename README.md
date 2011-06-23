@@ -29,10 +29,16 @@
   2. Ensure your login template is including jquery, and barauth.js
 
         <head>
-          ...
-          <script type="text/javascript" src="{{ STATIC_URL }}js/barauth.js"></script>
-          ...
+            ...
+            <script type="text/javascript" src="{{ STATIC_URL }}js/barauth.js"></script>
+            ...
         </head>
+
+  3. Optionally provide a host to post the logins to (if different from server including barauth.js)    
+
+        <script>
+            var window.barauth_host = 'myhost.com'
+        </script>
 
   When loaded this will remain in the background looking for keyboard input
   that matches the specific pattern encoded into the barcodes barauth generates.
