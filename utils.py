@@ -17,7 +17,7 @@ def gen_passhash(user_id):
     token_handle = hashlib.sha224()
     token_handle.update(user.email)
     token_handle.update(user.password)
-    token_handle.update(settings.SECRET_KEY)
+    token_handle.update(settings.BARCODE_SECRET_KEY)
     hex_hash = token_handle.hexdigest()
     return hex_hash
 
