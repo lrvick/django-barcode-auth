@@ -32,7 +32,7 @@ def login(request):
             )
         except ValueError:
             user = None
-        ctxt = {}
+        ctxt = {'referer': request.META.get('HTTP_REFERER', '')}
 	if user:
             if user.is_active:
                 user.backend = 'django.contrib.auth.backends.ModelBackend'
