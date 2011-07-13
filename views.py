@@ -25,9 +25,9 @@ def login(request):
         auth.logout(request)
         barcode_data = request.REQUEST['barcode_data']
         try:
-            username, password = barcode_data.lstrip('#').split('|')
+            user_id, password = barcode_data.lstrip('#').split('|')
             user = barcode_auth.authenticate(
-                    username=username,
+                    user_id=user_id,
                     password=password
                     )
         except ValueError:
