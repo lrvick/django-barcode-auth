@@ -10,9 +10,9 @@ from django.middleware.csrf import get_token
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 #from django.views.decorators.csrf import csrf_exempt
-from forms import UserCreationForm
-from models import UserBarcode
-from utils import print_card
+from barauth.forms import UserCreationForm
+from barauth.models import UserBarcode
+from barauth.utils import print_card
 
 barcode_auth = BarcodeAuthBackend()
 
