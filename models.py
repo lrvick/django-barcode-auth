@@ -35,7 +35,7 @@ def user_create_barcode(sender, instance, created, **kwargs):
         user_barcode.barcode.save('%s.png' % password_hash, barcode_contents)
 
         if settings.PRINT_CARDS:
-            print_card(instance, 'THIS IS MY BARCODE')
+            print_card(instance, user_barcode.barcode.name)
         pass
 
 models.signals.post_save.connect(user_create_barcode, sender=User, dispatch_uid="apps.barauth.models")
