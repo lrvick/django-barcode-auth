@@ -5,7 +5,7 @@ from django.contrib import auth
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.forms.models import model_to_dict
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.middleware.csrf import get_token
 from django.shortcuts import render_to_response
 from django.template import RequestContext
@@ -29,17 +29,21 @@ def login(request):
             user = barcode_auth.authenticate(
                     user_id=user_id,
                     password=password
-                    )
+            )
         except ValueError:
             user = None
-        if user is not None:
+        ctxt = {}
+	if user:
             if user.is_active:
                 user.backend = 'django.contrib.auth.backends.ModelBackend'
                 auth.login(request, user)
-                return HttpResponseRedirect('/')
+	else:
+	    ctxt['error'] = True
+    
+        return render_to_response('login.html', ctxt, context_instance=RequestContext(request))
 
-    return render_to_response('login.html', {},
-        context_instance=RequestContext(request))
+    else:
+	return HttpResponseRedirect('/')
 
 
 def logout(request):
