@@ -21,6 +21,9 @@ barcode_auth = BarcodeAuthBackend()
 # you need to login from something outside of the Django install
 #@csrf_exempt
 def login(request):
+    referer = request.META.get('HTTP_REFERER', '/') 
+    ctxt = None
+    user = None
     if 'barcode_data' in request.REQUEST:
         auth.logout(request)
         barcode_data = request.REQUEST['barcode_data']
@@ -32,19 +35,17 @@ def login(request):
             )
         except ValueError:
             user = None
-        ctxt = {}
+        ctxt = {'referer': referer}
 	if user:
             if user.is_active:
                 user.backend = 'django.contrib.auth.backends.ModelBackend'
                 auth.login(request, user)
 	else:
 	    ctxt['error'] = True
-    
-        return render_to_response('login.html', ctxt, context_instance=RequestContext(request))
-
+    if user:
+        return HttpResponseRedirect('%s?login=true&email=%s&full_name=%s %s' % (referer,user.email,user.first_name,user.last_name))
     else:
-	return HttpResponseRedirect('/')
-
+        return HttpResponseRedirect('%s?login=false' % referer)
 
 def logout(request):
     auth.logout(request)
