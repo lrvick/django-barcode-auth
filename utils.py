@@ -13,8 +13,7 @@ except ImportError:
     canvas = False
 
 
-def gen_passhash(user_id):
-    user = User.objects.get(pk=user_id)
+def gen_passhash(user):
     token_handle = hashlib.sha224()
     token_handle.update(user.email)
     token_handle.update(user.password)
