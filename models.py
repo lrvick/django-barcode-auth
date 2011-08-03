@@ -18,10 +18,12 @@ class UserBarcode(models.Model):
             upload_to='%s/img/barcodes' % settings.MEDIA_ROOT
             )
 
+    def __unicode__(self):
+        return self.user.email
 
 def user_create_barcode(sender, instance, created, **kwargs):
     if created:
-        password_hash = gen_passhash(instance.id)
+        password_hash = gen_passhash(instance)
         qr = QRCode(8, QRErrorCorrectLevel.Q)
         qr.addData("####%s|%s" % (str(instance.id), str(password_hash)))
         qr.make()
@@ -31,8 +33,11 @@ def user_create_barcode(sender, instance, created, **kwargs):
         # We'll take the username if we have to, but prefer first+last
         im.save(temp_file, format='png')
         barcode_contents = ContentFile(temp_file.getvalue())
-        user_barcode, created = UserBarcode.objects.get_or_create(user=instance)
-        user_barcode.barcode.save('%s.png' % str(instance.id), barcode_contents)
+
+        instance = User.objects.get(email=instance.email)
+      
+        user_barcode = UserBarcode(user=instance) 
+        user_barcode.barcode.save('%s.png' % str(instance.pk), barcode_contents)
 
         if settings.PRINT_CARDS:
             print_card(instance, user_barcode.barcode.name)
