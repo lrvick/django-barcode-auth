@@ -21,9 +21,9 @@ barcode_auth = BarcodeAuthBackend()
 # you need to login from something outside of the Django install
 #@csrf_exempt
 def login(request):
-    if (hasattr(settings,'BARAUTH_REDIRECT_URL')):
-    	referer = BARAUTH_REDIRECT_URL
-    else: 
+    if hasattr(settings,'BARAUTH_REDIRECT_URL'):
+    	referer = settings.BARAUTH_REDIRECT_URL
+    else:
     	referer = request.META.get('HTTP_REFERER', '/')
     ctxt = None
     user = None

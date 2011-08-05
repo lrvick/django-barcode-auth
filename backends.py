@@ -12,7 +12,7 @@ class BarcodeAuthBackend(object):
     def authenticate(self, user_id=None, password=None):
         try:
             user = User.objects.get(pk=user_id)
-            known_passhash = gen_passhash(user_id)
+            known_passhash = gen_passhash(user)
             if password == known_passhash:
                 return user
         except User.DoesNotExist:
