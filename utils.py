@@ -45,7 +45,7 @@ def print_card(user, barcode):
             c.drawCentredString(toLength(msg.get('x', XCENTER)), toLength(msg.get('y', YCENTER)), username if msg['text'] == '$username$' else msg['text'])
 
     c.showPage()
-    if hasattr(settings, 'PRINT_BACKS'):
+    if hasattr(settings, 'PRINT_BACK_IMAGE'):
         if os.path.isdir(settings.PRINT_BACK_IMAGE):
             back_image = '%s/%s' % (settings.PRINT_BACK_IMAGE, random.choice(os.listdir(settings.PRINT_BACK_IMAGE)))  # This is so ugly.
         elif os.path.isfile(settings.PRINT_BACK_IMAGE):
