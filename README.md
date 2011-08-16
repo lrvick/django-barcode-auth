@@ -69,7 +69,7 @@
 
   To manually log-in, you need only to format a GET request.
 
-  Log-in's GET's should be formatted as follows:
+  Log-in GET's should be formatted as follows:
 
     ?barcode_data=USER_ID|BARCODE_HASH
 
