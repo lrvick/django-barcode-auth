@@ -64,7 +64,39 @@
     
     PRINT_CARDS = 1
     PRINTER = 'card_printer' 
+
+### Manual use with GET ###
+
+  To manually log-in, you need only to format a GET request.
+
+  Log-in's GET's should be formatted as follows:
+
+    ?barcode_data=USER_ID|BARCODE_HASH
+
+  By default, if login is sucessful it will 301 redirect back to the referring URL, 
+  with a GET request attached.
+
+  If login is invalid it will return a GET of: 
  
+    ?login=true&email=user@example.com&full_name=First%20Last
+
+  If successful:
+
+    ?login=false
+
+  Example using curl and a valid user_id/hash for the user John Doe:
+
+    curl -sI "http://localhost/barauth/login?barcode_data=65|162112bb5765fb28fd153255d7694dc213665a5972cd06ce2c92e2ee" --referer http://mysite.com | grep Location
+
+  Output:
+
+    Location: http://mysite.com?login=true&email=john@doe.com&full_name=John%20Doe
+
+  If this was in fact not a valid user it would return:
+
+    Location: http://mysite.com?login=false
+
+
 ## Notes ##
     
   Use at your own risk. You may be eaten by a grue.
