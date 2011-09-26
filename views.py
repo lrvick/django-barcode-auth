@@ -5,14 +5,14 @@ from django.contrib import auth
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.forms.models import model_to_dict
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.middleware.csrf import get_token
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 #from django.views.decorators.csrf import csrf_exempt
-from forms import UserCreationForm
-from models import UserBarcode
-from utils import print_card
+from barauth.forms import UserCreationForm
+from barauth.models import UserBarcode
+from barauth.utils import print_card
 
 barcode_auth = BarcodeAuthBackend()
 
@@ -21,26 +21,34 @@ barcode_auth = BarcodeAuthBackend()
 # you need to login from something outside of the Django install
 #@csrf_exempt
 def login(request):
+    if hasattr(settings,'BARAUTH_REDIRECT_URL'):
+    	referer = settings.BARAUTH_REDIRECT_URL
+    else:
+    	referer = request.META.get('HTTP_REFERER', '/')
+    ctxt = None
+    user = None
     if 'barcode_data' in request.REQUEST:
         auth.logout(request)
         barcode_data = request.REQUEST['barcode_data']
         try:
-            username, password = barcode_data.lstrip('#').split('|')
+            user_id, password = barcode_data.lstrip('#').split('|')
             user = barcode_auth.authenticate(
-                    username=username,
+                    user_id=user_id,
                     password=password
-                    )
+            )
         except ValueError:
             user = None
-        if user is not None:
+        ctxt = {'referer': referer}
+	if user:
             if user.is_active:
                 user.backend = 'django.contrib.auth.backends.ModelBackend'
                 auth.login(request, user)
-                return HttpResponseRedirect('/')
-
-    return render_to_response('login.html', {},
-        context_instance=RequestContext(request))
-
+	else:
+	    ctxt['error'] = True
+    if user:
+        return HttpResponseRedirect('%s?login=true&email=%s&full_name=%s %s' % (referer,user.email,user.first_name,user.last_name))
+    else:
+        return HttpResponseRedirect('%s?login=false' % referer)
 
 def logout(request):
     auth.logout(request)
