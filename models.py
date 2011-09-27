@@ -34,7 +34,7 @@ def user_create_barcode(sender, instance, created, **kwargs):
     im.save(temp_file, format='png')
     barcode_contents = ContentFile(temp_file.getvalue())
 
-    user_barcode = UserBarcode(user=instance) 
+    user_barcode = UserBarcode.objects.get_or_create(user=instance)[0]
     user_barcode.barcode.save('%s.png' % str(instance.pk), barcode_contents)
 
     if settings.PRINT_CARDS:
