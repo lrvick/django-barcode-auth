@@ -1,30 +1,25 @@
 from backends import BarcodeAuthBackend
+from barauth.forms import UserCreationForm
+from barauth.utils import print_card
 from django.conf import settings
 from django.contrib import auth
-#from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.forms.models import model_to_dict
-from django.http import HttpResponseRedirect, HttpResponse
-from django.middleware.csrf import get_token
+from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-#from django.views.decorators.csrf import csrf_exempt
-from barauth.forms import UserCreationForm
-from barauth.models import UserBarcode
-from barauth.utils import print_card
 
 barcode_auth = BarcodeAuthBackend()
-
 
 # BE AWARE that uncommenting this introduces security risks. Only do this if
 # you need to login from something outside of the Django install
 #@csrf_exempt
 def login(request):
     if hasattr(settings,'BARAUTH_REDIRECT_URL'):
-    	referer = settings.BARAUTH_REDIRECT_URL
+        referer = settings.BARAUTH_REDIRECT_URL
     else:
-    	referer = request.META.get('HTTP_REFERER', '/')
+        referer = request.META.get('HTTP_REFERER', '/')
     ctxt = None
     user = None
     if 'barcode_data' in request.REQUEST:
@@ -39,12 +34,12 @@ def login(request):
         except ValueError:
             user = None
         ctxt = {'referer': referer}
-	if user:
+    if user:
             if user.is_active:
                 user.backend = 'django.contrib.auth.backends.ModelBackend'
                 auth.login(request, user)
-	else:
-	    ctxt['error'] = True
+    else:
+        ctxt['error'] = True
     if user:
         return HttpResponseRedirect('%s?login=true&email=%s&full_name=%s %s' % (referer,user.email,user.first_name,user.last_name))
     else:
@@ -93,7 +88,6 @@ def reprint(request, username=None):
     else:
         user = User.objects.get(username=username)
         if request.user == user:
-            barcode = UserBarcode.objects.get(user=user).barcode.name
-            print_card(user, barcode)
+            print_card(user)
         # Now they should go get their card, so let's log them out for security
         return HttpResponseRedirect(reverse('barauth.views.logout'))

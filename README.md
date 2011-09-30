@@ -1,21 +1,21 @@
 # Django-Barcode-Auth #
-  
+
   <http://github.com/lrvick/django-barcode-auth>
 
 ## About ##
 
   A system that lets you use any barcode scanner that emulates a
-  keyboard (most of them do) and use it to log-in a user via 
+  keyboard (most of them do) and use it to log-in a user via
   django's auth system.
-    
+
   Ideal for touch-screen kiosk deployments, cash registers, people
   who want to feel like James Bond when they log in to their blog, etc.
 
-  Also has hooks to generate barcodes for all users, that can 
+  Also has hooks to generate barcodes for all users, that can
   be obtained and printed from an admin interface.
 
 ## Current Features ##
- 
+
   * Includes a signal so barcodes are generated on regular user creation
   * Easy template to generate/verify hashes from barcodes
   * Invisibly login when a barcode is scanned via jQuery
@@ -34,7 +34,7 @@
             ...
         </head>
 
-  3. Optionally provide a host to post the logins to (if different from server including barauth.js)    
+  3. Optionally provide a host to post the logins to (if different from server including barauth.js)
 
         <script>
             var window.barauth_host = 'myhost.com'
@@ -42,28 +42,22 @@
 
   When loaded this will remain in the background looking for keyboard input
   that matches the specific pattern encoded into the barcodes barauth generates.
-  
+
   Most barcode scanners emulate keyboard entry, thus when the string is seen by
   the script, it will automatically try to use it to login that user.
 
   This also means you can log in at any time from any page, which is useful
   in a kiosk scenario where people can come and go at any time.
 
-  The app also includes a signal that will auto-generate a barcode on new user creation
-  You can determine its location using the included barcode_hash filter like so: 
-    
-    {% load barcode_auth %}
-    {{ STATIC_ROOT }}/img/barcodes/{{ user.username|barcode_hash }}.png 
-  
-  Additionally if the variable PRINT_CARDS is set in settings.py, barauth will
-  print a CR80 sized card to the default printer.
-
-  You can explicitly set the printer with the PRINTER variable.
+  Cards containing the barcodes are printed out on user creation, modification,
+  and whenever the print_cards() function is called from utils.py
 
   Example settings.py:
-    
+
     PRINT_CARDS = 1
-    PRINTER = 'card_printer' 
+    PRINTER = 'card_printer'
+
+  TODO: Document card format settings
 
 ### Manual use with GET ###
 
@@ -73,11 +67,11 @@
 
     ?barcode_data=USER_ID|BARCODE_HASH
 
-  By default, if login is sucessful it will 301 redirect back to the referring URL, 
+  By default, if login is sucessful it will 301 redirect back to the referring URL,
   with a GET request attached.
 
-  If login is invalid it will return a GET of: 
- 
+  If login is invalid it will return a GET of:
+
     ?login=true&email=user@example.com&full_name=First%20Last
 
   If successful:
@@ -98,7 +92,7 @@
 
 
 ## Notes ##
-    
+
   Use at your own risk. You may be eaten by a grue.
 
   Questions/Comments? Please check us out on IRC via irc://udderweb.com/#uw

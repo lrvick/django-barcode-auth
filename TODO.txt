@@ -1,0 +1,1 @@
+Create a function that returns an image file of the barcode, in case someone wants to use barcodes without printing.
